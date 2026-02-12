@@ -3,6 +3,9 @@
   "dependencies": {
     "pg": "^8.18.0"
   },
+  "scripts": {
+    "test:v1": "ts-node -r tsconfig-paths/register src/tests/test_v_1.ts"
+  },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/node": "^25.2.2",

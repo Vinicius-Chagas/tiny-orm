@@ -1,4 +1,6 @@
 import { DataBase } from 'src/drive/DataBase';
+import { Repository } from 'src/drive/Repository';
+import { Orm } from './orm';
 
 const db = new DataBase({
   user: 'postgres',
@@ -9,29 +11,35 @@ const db = new DataBase({
 });
 
 async function test() {
-  const result_q1 = await db.insert('orm', {
+  const orm_repo = new Repository(db, Orm);
+
+  const result_q1 = await orm_repo.insert({
     val1: 'teste',
     val2: 1,
   });
 
   console.log({ result_q1: result_q1 });
 
-  const result_q2 = await db.findById('orm', result_q1[0].id);
+  if (!result_q1?.id) {
+    throw Error('No insert result');
+  }
 
-  console.log({ result_q2: result_q2[0] });
+  const result_q2 = await orm_repo.findOneById(result_q1.id);
 
-  await db.updateById('orm', result_q1[0].id, {
+  console.log({ result_q2: result_q2 });
+
+  await orm_repo.updateById(result_q1.id, {
     val1: 'teste update',
     val2: 11,
   });
 
-  const result_q4 = await db.findById('orm', result_q1[0].id);
+  const result_q4 = await orm_repo.findAll();
 
-  console.log({ result_q4: result_q4[0] });
+  console.log({ result_q4: result_q4 });
 
-  const result_q5 = await db.deleteById('orm', result_q1[0].id);
+  const result_q5 = await orm_repo.deleteById(result_q1.id);
 
-  console.log({ result_q5: result_q5[0] });
+  console.log({ result_q5: result_q5.affected });
 }
 
 test();
