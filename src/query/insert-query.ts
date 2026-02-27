@@ -1,5 +1,5 @@
 import { toString } from 'src/utils';
-import { BaseQuery } from '../abstract/BaseQuery';
+import { BaseQuery } from './base-query';
 
 export class InsertQuery<C extends { id: unknown }> extends BaseQuery<
   C,

@@ -1,5 +1,5 @@
-import { DataBase } from 'src/drive/DataBase';
-import { Repository } from 'src/drive/Repository';
+import { DataBase } from 'src/core/database';
+import { Repository } from 'src/core/repository';
 import { Orm } from './orm';
 
 const db = new DataBase({

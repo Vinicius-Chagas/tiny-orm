@@ -1,4 +1,4 @@
-import { BaseQuery } from '../abstract/BaseQuery';
+import { BaseQuery } from './base-query';
 
 export class FindQuery<C extends { id: unknown }> extends BaseQuery<C, { id?: C['id'] }> {
   constructor(

@@ -32,6 +32,6 @@
     "noUnusedLocals": true, // Report errors on unused local variables.
     "noUnusedParameters": true // Report errors on unused parameters in functions
   },
-    "include": ["src"],
+    "include": ["src", "tests"],
     "exclude": ["node_modules", "dist", ".pnp.cjs", ".pnp.loader.cjs", ".yarn"]
 }

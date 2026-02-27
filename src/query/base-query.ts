@@ -1,5 +1,5 @@
 import { QueryResult } from 'pg';
-import { DataBase } from '../DataBase';
+import { DataBase } from '../core/database';
 
 export abstract class BaseQuery<C extends { id?: unknown }= any, R = QueryResult<any>> {
   constructor(readonly entity_name: string) {}

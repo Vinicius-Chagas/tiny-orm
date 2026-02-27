@@ -1,10 +1,9 @@
 import { QueryResult } from 'pg';
-import { DataBase } from './DataBase';
-import { InsertQuery } from './queries/InsertQuery';
-import { FindQuery } from './queries/findQuery';
-import { toString } from 'src/utils';
-import { DeleteQuery } from './queries/deleteQuery';
-import { UpdateQuery } from './queries/updateQuery';
+import { DataBase } from './database';
+import { InsertQuery } from '../query/insert-query';
+import { FindQuery } from '../query/find-query';
+import { DeleteQuery } from '../query/delete-query';
+import { UpdateQuery } from '../query/update-query';
 
 type Class<T = any> = new (...args: any[]) => T;
 class Repository<C extends Class = Class> {
