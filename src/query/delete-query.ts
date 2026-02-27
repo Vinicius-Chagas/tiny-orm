@@ -1,6 +1,7 @@
+import { Class } from 'src/interfaces/repository.interface';
 import { BaseQuery } from './base-query';
 
-export class DeleteQuery<C extends { id: unknown }> extends BaseQuery<C, { id?: C['id'] }> {
+export class DeleteQuery<C extends Class> extends BaseQuery<C> {
   constructor(
     public readonly entity_name: string,
     private readonly where?: { where: Partial<C> },
@@ -9,7 +10,7 @@ export class DeleteQuery<C extends { id: unknown }> extends BaseQuery<C, { id?: 
   }
 
   protected build() {
-    const where = this.extract_from_where()
+    const where = this.extract_from_where();
     return `DELETE FROM ${this.entity_name} WHERE ${where}`;
   }
 

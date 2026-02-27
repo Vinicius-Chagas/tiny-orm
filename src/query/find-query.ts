@@ -1,6 +1,7 @@
+import { Class } from 'src/interfaces/repository.interface';
 import { BaseQuery } from './base-query';
 
-export class FindQuery<C extends { id: unknown }> extends BaseQuery<C, { id?: C['id'] }> {
+export class FindQuery<C extends Class> extends BaseQuery<C> {
   constructor(
     public readonly entity_name: string,
     private readonly findType: 'one' | 'id' | 'all',

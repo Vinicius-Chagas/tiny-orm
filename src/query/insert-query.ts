@@ -1,10 +1,8 @@
-import { toString } from 'src/utils';
+import { toString } from 'src/utils/string-utils';
 import { BaseQuery } from './base-query';
+import { Class } from 'src/interfaces/repository.interface';
 
-export class InsertQuery<C extends { id: unknown }> extends BaseQuery<
-  C,
-  { id: C['id'] | undefined }
-> {
+export class InsertQuery<C extends Class> extends BaseQuery<C> {
   constructor(
     public readonly entity_name: string,
     private readonly data: Partial<C>,

@@ -1,10 +1,8 @@
-import { toString } from 'src/utils';
+import { toString } from 'src/utils/string-utils';
 import { BaseQuery } from './base-query';
+import { Class } from 'src/interfaces/repository.interface';
 
-export class UpdateQuery<C extends { id: unknown }> extends BaseQuery<
-  C,
-  { id: C['id'] | undefined }
-> {
+export class UpdateQuery<C extends Class> extends BaseQuery<C> {
   constructor(
     public readonly entity_name: string,
     private readonly data: Partial<C>,
@@ -17,5 +15,4 @@ export class UpdateQuery<C extends { id: unknown }> extends BaseQuery<
 
     return `UPDATE ${this.entity_name} SET${update_values.join(', ')} WHERE id = $1 RETURNING id`;
   }
-
 }

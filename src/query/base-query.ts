@@ -1,17 +1,18 @@
 import { QueryResult } from 'pg';
-import { DataBase } from '../core/database';
+import { IDataBase } from 'src/interfaces/database.interface';
+import { Class } from 'src/interfaces/repository.interface';
 
-export abstract class BaseQuery<C extends { id?: unknown }= any, R = QueryResult<any>> {
+export abstract class BaseQuery<C extends Class = Class> {
   constructor(readonly entity_name: string) {}
 
   protected abstract build(): string;
 
-  async execute(db: DataBase, params?: any): Promise<R> {
+  async execute(db: IDataBase, params?: any) {
     const sql = this.build();
-    return db.query(sql, params) as Promise<R>;
+    return db.query(sql, params);
   }
 
-  async exec_returning_affected(db: DataBase,  params?: any) {
+  async exec_returning_affected(db: IDataBase, params?: any) {
     const sql = this.build();
     const result = await db.query(sql, params);
     return this.extract_affected_ids(result);
@@ -19,10 +20,10 @@ export abstract class BaseQuery<C extends { id?: unknown }= any, R = QueryResult
 
   private extract_affected_ids(result: QueryResult<any>) {
     const ids = (result.rows ?? []).map((r: any) => r.id) as Array<
-    C['id'] | null | undefined
+      InstanceType<C>['id'] | null | undefined
     >;
 
-    const affected = ids.filter((v): v is NonNullable<C['id']> => v != null);
+    const affected = ids.filter((v): v is NonNullable<InstanceType<C>['id']> => v != null);
 
     return { affected };
   }
