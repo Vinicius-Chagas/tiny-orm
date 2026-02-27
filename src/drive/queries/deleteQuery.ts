@@ -18,6 +18,4 @@ export class DeleteQuery<C extends { id: unknown }> extends BaseQuery<C, { id?: 
     const entries = Object.entries(this.where.where);
     return entries.map(([k, v]) => `${String(k)} = ${String(v)}`).join(' AND ');
   }
-
-
 }

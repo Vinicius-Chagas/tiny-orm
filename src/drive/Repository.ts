@@ -4,10 +4,10 @@ import { InsertQuery } from './queries/InsertQuery';
 import { FindQuery } from './queries/findQuery';
 import { toString } from 'src/utils';
 import { DeleteQuery } from './queries/deleteQuery';
+import { UpdateQuery } from './queries/updateQuery';
 
 type Class<T = any> = new (...args: any[]) => T;
 class Repository<C extends Class = Class> {
-  // private readonly entity: C;
   private readonly db: DataBase;
   private readonly entity_name: string;
 
@@ -16,7 +16,6 @@ class Repository<C extends Class = Class> {
     if (typeof entity !== 'function' || !entity.prototype) {
       throw new TypeError('entity must be a class/constructor');
     }
-    // this.entity = entity;
     this.entity_name = entity.name.toLowerCase();
   }
 
@@ -26,12 +25,8 @@ class Repository<C extends Class = Class> {
   }
 
   async updateById(id: InstanceType<C>['id'], data: Partial<InstanceType<C>>) {
-    const update_values = Object.entries(data).map(([k, v]) => k + ' = ' + toString(v));
-    const result = await this.db.query(
-      `UPDATE ${this.entity_name} SET ${update_values.join(', ')} WHERE id = $1 RETURNING id`,
-      [id],
-    );
-    return this.extract_affected_ids(result);
+    const update_query = new UpdateQuery(this.entity_name, data);
+    return update_query.exec_returning_affected(this.db);
   }
 
   async deleteById(id: string) {
