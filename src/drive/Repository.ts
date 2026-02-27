@@ -3,6 +3,7 @@ import { DataBase } from './DataBase';
 import { InsertQuery } from './queries/InsertQuery';
 import { FindQuery } from './queries/findQuery';
 import { toString } from 'src/utils';
+import { DeleteQuery } from './queries/deleteQuery';
 
 type Class<T = any> = new (...args: any[]) => T;
 class Repository<C extends Class = Class> {
@@ -34,11 +35,8 @@ class Repository<C extends Class = Class> {
   }
 
   async deleteById(id: string) {
-    const result = await this.db.query(
-      `DELETE FROM ${this.entity_name} WHERE id = $1 RETURNING id`,
-      [id],
-    );
-    return this.extract_affected_ids(result);
+    const delete_query = new DeleteQuery(this.entity_name, { where: { id }})
+    return delete_query.exec_returning_affected(this.db);
   }
 
   async findOneById(id: string) {
