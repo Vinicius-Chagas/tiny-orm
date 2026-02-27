@@ -10,7 +10,7 @@ export class DeleteQuery<C extends { id: unknown }> extends BaseQuery<C, { id?: 
 
   protected build() {
     const where = this.extract_from_where()
-    return `SELECT * FROM ${this.entity_name} WHERE ${where}`;
+    return `DELETE FROM ${this.entity_name} WHERE ${where}`;
   }
 
   private extract_from_where() {

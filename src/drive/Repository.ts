@@ -26,12 +26,12 @@ class Repository<C extends Class = Class> {
 
   async updateById(id: InstanceType<C>['id'], data: Partial<InstanceType<C>>) {
     const update_query = new UpdateQuery(this.entity_name, data);
-    return update_query.exec_returning_affected(this.db);
+    return update_query.exec_returning_affected(this.db, {id});
   }
 
   async deleteById(id: string) {
     const delete_query = new DeleteQuery(this.entity_name, { where: { id }})
-    return delete_query.exec_returning_affected(this.db);
+    return delete_query.exec_returning_affected(this.db, {id});
   }
 
   async findOneById(id: string) {

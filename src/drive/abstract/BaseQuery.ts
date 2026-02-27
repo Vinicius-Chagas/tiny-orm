@@ -6,14 +6,14 @@ export abstract class BaseQuery<C extends { id?: unknown }= any, R = QueryResult
 
   protected abstract build(): string;
 
-  async execute(db: DataBase): Promise<R> {
+  async execute(db: DataBase, params?: any): Promise<R> {
     const sql = this.build();
-    return db.query(sql) as Promise<R>;
+    return db.query(sql, params) as Promise<R>;
   }
 
-  async exec_returning_affected(db: DataBase) {
+  async exec_returning_affected(db: DataBase,  params?: any) {
     const sql = this.build();
-    const result = await db.query(sql);
+    const result = await db.query(sql, params);
     return this.extract_affected_ids(result);
   }
 
