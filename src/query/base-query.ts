@@ -5,16 +5,16 @@ import { Class } from 'src/interfaces/repository.interface';
 export abstract class BaseQuery<C extends Class = Class> {
   constructor(readonly entity_name: string) {}
 
-  protected abstract build(): string;
+  protected abstract build(): { query: string; params: any[] };
 
   async execute(db: IDataBase, params?: any) {
     const sql = this.build();
-    return db.query(sql, params);
+    return db.query(sql.query, [...sql.params, params]);
   }
 
   async exec_returning_affected(db: IDataBase, params?: any) {
     const sql = this.build();
-    const result = await db.query(sql, params);
+    const result = await db.query(sql.query, [...sql.params, params]);
     return this.extract_affected_ids(result);
   }
 

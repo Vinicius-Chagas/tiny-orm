@@ -19,8 +19,9 @@ export class InsertQuery<C extends Class> extends BaseQuery<C> {
       vals.push(toString(v));
     }
 
-    return `INSERT INTO ${this.entity_name} (${cols.join(
-      ', ',
-    )}) VALUES (${vals.join(', ')}) RETURNING id`;
+    return {
+      query: `INSERT INTO $1 ($2) VALUES ($3) RETURNING id`,
+      params: [this.entity_name, cols.join(', '), vals.join(', ')],
+    };
   }
 }

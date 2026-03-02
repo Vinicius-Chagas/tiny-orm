@@ -22,7 +22,7 @@ export class FindQuery<C extends Class> extends BaseQuery<C> {
   }
 
   private findAll() {
-    return `SELECT * FROM ${this.entity_name}`;
+    return { query: `SELECT * FROM $1`, params: [this.entity_name] };
   }
 
   //** Não havia necessidade de customização no query object,
@@ -34,7 +34,7 @@ export class FindQuery<C extends Class> extends BaseQuery<C> {
 
   private findOne() {
     const where = this.extract_from_where();
-    return `SELECT * FROM ${this.entity_name} WHERE ${where}`;
+    return { query: `SELECT * FROM $1 WHERE $2`, params: [this.entity_name, where] };
   }
 
   private extract_from_where() {
