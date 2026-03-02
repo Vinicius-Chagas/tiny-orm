@@ -1,11 +1,12 @@
 import { Class } from 'src/interfaces/repository.interface';
 import { BaseQuery } from './base-query';
+import { PaginationOpts } from 'src/types/Pagination.types';
 
 export class FindQuery<C extends Class> extends BaseQuery<C> {
   constructor(
     public readonly entity_name: string,
     private readonly findType: 'one' | 'id' | 'all',
-    private readonly where?: { where: Partial<C> },
+    private readonly opts?: { where: Partial<C> } & PaginationOpts<C>,
   ) {
     super(entity_name);
   }
@@ -22,7 +23,7 @@ export class FindQuery<C extends Class> extends BaseQuery<C> {
   }
 
   private findAll() {
-    return { query: `SELECT * FROM $1`, params: [this.entity_name] };
+    return { query: `SELECT * FROM $`, params: [this.entity_name] };
   }
 
   //** Não havia necessidade de customização no query object,
@@ -34,12 +35,12 @@ export class FindQuery<C extends Class> extends BaseQuery<C> {
 
   private findOne() {
     const where = this.extract_from_where();
-    return { query: `SELECT * FROM $1 WHERE $2`, params: [this.entity_name, where] };
+    return { query: `SELECT * FROM $ WHERE $`, params: [this.entity_name, where] };
   }
 
   private extract_from_where() {
-    if (!this.where) return '';
-    const entries = Object.entries(this.where.where);
+    if (!this.opts) return '';
+    const entries = Object.entries(this.opts.where);
     return entries.map(([k, v]) => `${String(k)} = ${String(v)}`).join(' AND ');
   }
 }

@@ -20,7 +20,7 @@ export class InsertQuery<C extends Class> extends BaseQuery<C> {
     }
 
     return {
-      query: `INSERT INTO $1 ($2) VALUES ($3) RETURNING id`,
+      query: `INSERT INTO $ ($) VALUES ($) RETURNING id`,
       params: [this.entity_name, cols.join(', '), vals.join(', ')],
     };
   }

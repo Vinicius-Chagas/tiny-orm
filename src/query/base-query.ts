@@ -9,12 +9,14 @@ export abstract class BaseQuery<C extends Class = Class> {
 
   async execute(db: IDataBase, params?: any) {
     const sql = this.build();
-    return db.query(sql.query, [...sql.params, params]);
+    const built = this.buildParams(sql.query, [...sql.params, params]);
+    return db.query(...built);
   }
 
   async exec_returning_affected(db: IDataBase, params?: any) {
     const sql = this.build();
-    const result = await db.query(sql.query, [...sql.params, params]);
+    const built = this.buildParams(sql.query, [...sql.params, params]);
+    const result = await db.query(...built);
     return this.extract_affected_ids(result);
   }
 
@@ -26,5 +28,13 @@ export abstract class BaseQuery<C extends Class = Class> {
     const affected = ids.filter((v): v is NonNullable<InstanceType<C>['id']> => v != null);
 
     return { affected };
+  }
+
+  private buildParams(query: string, params: any[]): [string, any[]] {
+    for (let i = 1; i < params.length; i++) {
+      query.replace('$', `$${i}`);
+    }
+
+    return [query, params];
   }
 }

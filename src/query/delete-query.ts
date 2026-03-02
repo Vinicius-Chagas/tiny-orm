@@ -11,7 +11,7 @@ export class DeleteQuery<C extends Class> extends BaseQuery<C> {
 
   protected build() {
     const where = this.extract_from_where();
-    return { query: `DELETE FROM $1 WHERE $2`, params: [this.entity_name, where] };
+    return { query: `DELETE FROM $ WHERE $`, params: [this.entity_name, where] };
   }
 
   private extract_from_where() {

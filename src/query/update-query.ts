@@ -14,7 +14,7 @@ export class UpdateQuery<C extends Class> extends BaseQuery<C> {
     const update_values = Object.entries(this.data).map(([k, v]) => k + ' = ' + toString(v));
 
     return {
-      query: `UPDATE $1 SET $2 WHERE id = $3 RETURNING id`,
+      query: `UPDATE $ SET $ WHERE id = $ RETURNING id`,
       params: [this.entity_name, update_values.join(', ')],
     };
   }
