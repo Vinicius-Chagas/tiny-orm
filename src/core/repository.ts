@@ -4,6 +4,7 @@ import { DeleteQuery } from '../query/delete-query';
 import { UpdateQuery } from '../query/update-query';
 import { IDataBase } from 'src/interfaces/database.interface';
 import { Class, IRepository } from 'src/interfaces/repository.interface';
+import { PaginationOpts } from 'src/types/Pagination.types';
 
 class Repository<C extends Class> implements IRepository<C> {
   private readonly db: IDataBase;
@@ -39,8 +40,14 @@ class Repository<C extends Class> implements IRepository<C> {
     return result.rows[0] as InstanceType<C>;
   }
 
-  async findAll() {
-    const find_query = new FindQuery(this.entity_name, 'all');
+  async findOne(opts?: { where: Partial<InstanceType<C>> } & PaginationOpts<C>) {
+    const find_query = new FindQuery(this.entity_name, 'one', opts);
+    const result = await find_query.execute(this.db);
+    return result.rows[0] as InstanceType<C>;
+  }
+
+  async findAll(opts?: { where: Partial<InstanceType<C>> } & PaginationOpts<C>) {
+    const find_query = new FindQuery(this.entity_name, 'all', opts);
     const result = await find_query.execute(this.db);
     return result.rows as Array<InstanceType<C>>;
   }

@@ -12,11 +12,9 @@
     "esModuleInterop": true,
     "moduleResolution": "NodeNext",
     "module": "NodeNext",
+    "types": ["node", "jest"],
     "paths": {},
 
-    "plugins": [
-      { "name": "@yarnpkg/pnpify/typescript" }
-    ],
 
     "sourceMap": true,
     "sourceRoot": "/",

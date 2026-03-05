@@ -32,7 +32,7 @@ export abstract class BaseQuery<C extends Class = Class> {
 
   private buildParams(query: string, params: any[]): [string, any[]] {
     for (let i = 1; i < params.length; i++) {
-      query.replace('$', `$${i}`);
+      query.replace('$', `${i}`);
     }
 
     return [query, params];

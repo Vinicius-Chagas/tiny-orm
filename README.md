@@ -108,6 +108,23 @@ Notes:
 
 ---
 
+
+## 🖨️ Query logging
+
+If you'd like to see the SQL that is being executed, set the
+`DB_LOG_QUERIES` environment variable before running your code.  The
+`DataBase.query` wrapper will print the statement and parameters using
+`console.debug`.
+
+```bash
+DB_LOG_QUERIES=1 node dist/index.js    # or however you start your app
+# for ts-node
+DB_LOG_QUERIES=1 npx ts-node -r tsconfig-paths/register src/tests/test_v_1.ts
+```
+
+> This is helpful for debugging builders or understanding generated
+> SQL without changing the library itself.
+
 ## 🔒 Security & robustness tips
 
 - The current implementation builds SQL strings — prefer parameterized queries (placeholders + values) to avoid SQL injection and avoid syntax errors when values contain quotes or special characters.
