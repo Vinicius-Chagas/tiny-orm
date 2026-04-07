@@ -9,29 +9,30 @@ export class PaginationQueries<C extends Class> {
 
   limit() {
     if (this.opts.limit) {
-      return { query: ` LIMIT $ `, params: [this.opts.limit] };
+      return { query: ` LIMIT :limit `, params: { limit: this.opts.limit } };
     }
+    return undefined;
   }
 
   skip() {
     if (this.opts.skip) {
-      return { query: ' OFFSET $ ', params: [this.opts.skip] };
+      return { query: ' OFFSET :skip ', params: { skip: this.opts.skip } };
     }
+    return undefined;
   }
 
   orderBy() {
     if (this.opts.orderBy) {
       const order2 = Object.entries(this.opts.orderBy?.key).reduce((acc, [k, v]) => {
-        if (v) {
-          acc.push(k);
-        }
+        acc.push(`${k} ${v ?? 'ASC'}`);
         return acc;
       }, [] as string[]);
 
       return {
-        query: ' ORDER BY $ $ ',
-        params: [order2.join(' , '), this.opts.orderBy?.direction ?? 'ASC'],
+        query: ' ORDER BY :order ',
+        params: { order: order2.join(' , ') },
       };
     }
+    return undefined;
   }
 }

@@ -19,36 +19,36 @@ class Repository<C extends Class> implements IRepository<C> {
   }
 
   async insert(data: InstanceType<C>) {
-    const insert_query = new InsertQuery(this.entity_name, data);
-    const result = await insert_query.execute(this.db);
+    const insert_query = new InsertQuery(this.entity_name);
+    const result = await insert_query.execute(this.db, { data });
     return { id: result.rows[0]?.id as InstanceType<C>['id'] | undefined };
   }
 
   async updateById(id: InstanceType<C>['id'], data: Partial<InstanceType<C>>) {
-    const update_query = new UpdateQuery(this.entity_name, data);
-    return update_query.exec_returning_affected(this.db, { id });
+    const update_query = new UpdateQuery(this.entity_name);
+    return update_query.exec_returning_affected(this.db, { where: { id }, data });
   }
 
   async deleteById(id: string) {
-    const delete_query = new DeleteQuery(this.entity_name, { where: { id } });
-    return delete_query.exec_returning_affected(this.db, { id });
+    const delete_query = new DeleteQuery(this.entity_name);
+    return delete_query.exec_returning_affected(this.db, { where: { id } });
   }
 
   async findOneById(id: string) {
-    const find_query = new FindQuery(this.entity_name, 'id', { where: { id } });
-    const result = await find_query.execute(this.db);
+    const find_query = new FindQuery(this.entity_name, 'id');
+    const result = await find_query.execute(this.db, { where: { id } });
     return result.rows[0] as InstanceType<C>;
   }
 
   async findOne(opts?: { where: Partial<InstanceType<C>> } & PaginationOpts<C>) {
-    const find_query = new FindQuery(this.entity_name, 'one', opts);
-    const result = await find_query.execute(this.db);
+    const find_query = new FindQuery(this.entity_name, 'one');
+    const result = await find_query.execute(this.db, opts);
     return result.rows[0] as InstanceType<C>;
   }
 
   async findAll(opts?: { where: Partial<InstanceType<C>> } & PaginationOpts<C>) {
-    const find_query = new FindQuery(this.entity_name, 'all', opts);
-    const result = await find_query.execute(this.db);
+    const find_query = new FindQuery(this.entity_name, 'all');
+    const result = await find_query.execute(this.db, opts);
     return result.rows as Array<InstanceType<C>>;
   }
 }

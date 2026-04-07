@@ -1,16 +1,17 @@
 import { Repository } from 'src/core/repository';
 import { DataBase } from 'src/core/database';
 import { Orm } from './orm';
+import { PoolConfig } from 'pg';
 
 // database connection configuration. tests expect a PostgreSQL
 // instance reachable with these defaults; override with standard
 // PG environment variables if necessary.
-const dbConfig = {
+const dbConfig: PoolConfig = {
   user: process.env.PGUSER || 'postgres',
   password: process.env.PGPASSWORD || 'password',
   host: process.env.PGHOST || 'localhost',
   port: Number(process.env.PGPORT) || 5432,
-  database: process.env.PGDATABASE || 'mydatabase',
+  database: process.env.PGDATABASE || 'estudo',
 };
 
 describe('Repository (integration)', () => {
@@ -20,18 +21,21 @@ describe('Repository (integration)', () => {
   beforeAll(async () => {
     db = new DataBase(dbConfig);
     repo = new Repository(db, Orm);
-    // ensure table exists; tests assume lowercase class name = "orm"
+
+    // Mantém o DB no search+path correto
+    await db.query('SET search_path TO tiny_orm');
+
+    // Cria tabela se não existe
     await db.query(
       `CREATE TABLE IF NOT EXISTS orm (
          id serial PRIMARY KEY,
          val1 text NOT NULL,
          val2 integer NOT NULL
-       );`
+       );`,
     );
   });
 
   beforeEach(async () => {
-    // clean table before every test
     await db.query('TRUNCATE TABLE orm RESTART IDENTITY CASCADE');
   });
 

@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest",
     "test:unit": "jest --runInBand",
-    "test:v1": "ts-node -r tsconfig-paths/register src/tests/test_v_1.ts"
+    "test:v1": "ts-node -r tsconfig-paths/register tests/v1.spec.ts"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
