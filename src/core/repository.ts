@@ -46,7 +46,7 @@ class Repository<C extends Class> implements IRepository<C> {
     return result.rows[0] as InstanceType<C>;
   }
 
-  async findAll(opts?: { where: Partial<InstanceType<C>> } & PaginationOpts<C>) {
+  async findAll(opts?: { where?: Partial<InstanceType<C>> } & PaginationOpts<C>) {
     const find_query = new FindQuery(this.entity_name, 'all');
     const result = await find_query.execute(this.db, opts);
     return result.rows as Array<InstanceType<C>>;

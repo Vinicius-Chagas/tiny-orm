@@ -13,6 +13,7 @@ export abstract class BaseQuery<C extends Class, P> {
   async execute(db: IDataBase, params?: P) {
     const sql = this.build(params);
     const built = this.buildParams(sql.query, sql.params);
+    console.log({ built });
     return db.query(...built);
   }
 

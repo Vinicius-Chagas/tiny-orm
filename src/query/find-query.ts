@@ -2,10 +2,12 @@ import { Class } from 'src/interfaces/repository.interface';
 import { BaseQuery } from './base-query';
 import { IQueryOpts } from 'src/interfaces/query-opts.interface';
 import { PaginationOpts } from 'src/types/Pagination.types';
+import { PaginationQueries } from './pagination-query';
+import { omit, pick } from 'lodash';
 
 export class FindQuery<C extends Class> extends BaseQuery<
   C,
-  Pick<IQueryOpts<C>, 'where'> & PaginationOpts<C>
+  Partial<Pick<IQueryOpts<C>, 'where'> & PaginationOpts<C>>
 > {
   constructor(
     public readonly entity_name: string,
@@ -14,15 +16,33 @@ export class FindQuery<C extends Class> extends BaseQuery<
     super(entity_name);
   }
 
-  protected build(params: IQueryOpts<C>) {
+  protected build(params: IQueryOpts<C> & PaginationOpts<C>) {
+    const rest = omit(params, ['limit', 'skip', 'orderBy']);
+    let result: {
+      query: string;
+      params: {
+        [x: string]: unknown;
+      };
+    } | null = null;
     switch (this.findType) {
       case 'one':
-        return this.findOne(params);
+        result = this.findOne(rest);
+        break;
       case 'id':
-        return this.findOneById(params);
+        result = this.findOneById(rest);
+        break;
       case 'all':
-        return this.findAll(params);
+        result = this.findAll(rest);
+        break;
     }
+
+    const paginator = new PaginationQueries(pick(params, ['limit', 'skip', 'orderBy']));
+    const pagination = paginator.build();
+
+    return {
+      query: result.query.concat(pagination.query).trim(),
+      params: { ...result.params, ...pagination.params },
+    };
   }
 
   private findAll(params: IQueryOpts<C>) {

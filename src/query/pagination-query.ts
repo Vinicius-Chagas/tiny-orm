@@ -3,36 +3,46 @@ import { PaginationOpts } from 'src/types/Pagination.types';
 
 export class PaginationQueries<C extends Class> {
   private opts: PaginationOpts<C>;
+  private query: string;
+  private params: { [x: string]: unknown };
   constructor(opts: PaginationOpts<C>) {
     this.opts = opts;
+    this.query = ' ';
+    this.params = {};
   }
 
-  limit() {
+  build() {
+    this.orderBy();
+    this.limit();
+    this.skip();
+    return {
+      query: this.query,
+      params: this.params,
+    };
+  }
+  private limit() {
     if (this.opts.limit) {
-      return { query: ` LIMIT :limit `, params: { limit: this.opts.limit } };
+      this.query += ` LIMIT :limit `;
+      this.params['limit'] = this.opts.limit;
     }
-    return undefined;
   }
 
-  skip() {
+  private skip() {
     if (this.opts.skip) {
-      return { query: ' OFFSET :skip ', params: { skip: this.opts.skip } };
+      this.query += ' OFFSET :skip ';
+      this.params['skip'] = this.opts.skip;
     }
-    return undefined;
   }
 
-  orderBy() {
+  private orderBy() {
     if (this.opts.orderBy) {
-      const order2 = Object.entries(this.opts.orderBy?.key).reduce((acc, [k, v]) => {
+      const order2 = Object.entries(this.opts.orderBy).reduce((acc, [k, v]) => {
         acc.push(`${k} ${v ?? 'ASC'}`);
         return acc;
       }, [] as string[]);
 
-      return {
-        query: ' ORDER BY :order ',
-        params: { order: order2.join(' , ') },
-      };
+      this.query += ' ORDER BY :order ';
+      this.params['order'] = order2.join(' , ');
     }
-    return undefined;
   }
 }

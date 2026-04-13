@@ -97,6 +97,61 @@ describe('Repository (integration)', () => {
     });
   });
 
+  describe('pagination', () => {
+    beforeEach(async () => {
+      await repo.insert({ val1: 'bar', val2: 7 });
+      await repo.insert({ val1: 'bar2', val2: 3 });
+      await repo.insert({ val1: 'bar3', val2: 4 });
+    });
+
+    it('limits the output to 1', async () => {
+      const res = await repo.findAll({ limit: 1 });
+      expect(res).toEqual([{ id: 1, val1: 'bar', val2: 7 }]);
+    });
+
+    it('skips the first item', async () => {
+      const res = await repo.findAll({ skip: 1 });
+      expect(res).toEqual([
+        { id: 2, val1: 'bar2', val2: 3 },
+        { id: 3, val1: 'bar3', val2: 4 },
+      ]);
+    });
+
+    it('orderBy ASC', async () => {
+      const res = await repo.findAll({ orderBy: { val2: 'ASC' } });
+      expect(res).toEqual([
+        { id: 2, val1: 'bar2', val2: 3 },
+        { id: 3, val1: 'bar3', val2: 4 },
+        { id: 1, val1: 'bar', val2: 7 },
+      ]);
+    });
+
+    it('orderBy DESC', async () => {
+      const res = await repo.findAll({ orderBy: { val2: 'DESC' } });
+      console.log({ res_DESC: res });
+      expect(res).toEqual([
+        { id: 1, val1: 'bar', val2: 7 },
+        { id: 3, val1: 'bar3', val2: 4 },
+        { id: 2, val1: 'bar2', val2: 3 },
+      ]);
+    });
+
+    it('skips the first item 1 and limit to 1', async () => {
+      const res = await repo.findAll({ skip: 1, limit: 1 });
+      expect(res).toEqual([{ id: 2, val1: 'bar2', val2: 3 }]);
+    });
+
+    it('skips the first item 1, limit to 1 and order asc', async () => {
+      const res = await repo.findAll({ skip: 1, limit: 1, orderBy: { val2: 'ASC' } });
+      expect(res).toEqual([{ id: 2, val1: 'bar2', val2: 3 }]);
+    });
+
+    it('skips the first item 1, limit to 1 and order desc', async () => {
+      const res = await repo.findAll({ skip: 1, limit: 1, orderBy: { val2: 'DESC' } });
+      expect(res).toEqual([{ id: 1, val1: 'bar', val2: 7 }]);
+    });
+  });
+
   afterAll(async () => {
     // close pool so Jest can exit cleanly
     await db.close();
